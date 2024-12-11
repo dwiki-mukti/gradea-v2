@@ -1,0 +1,27 @@
+/**
+ *
+ *
+ *
+ * CARD
+ */
+.card {
+    @apply w-full bg-white lg:rounded-lg;
+}
+
+.card-header {
+    @apply flex justify-between items-center pt-4 pb-4;
+}
+
+.card-title {
+    @apply text-lg grow capitalize mt-2;
+}
+
+.card-header,
+.card-body,
+.card-footer {
+    @apply px-6;
+}
+
+.card-footer {
+    @apply flex items-center py-6;
+}
