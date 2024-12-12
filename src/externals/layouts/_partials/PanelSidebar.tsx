@@ -1,16 +1,20 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
-import SidebarItemPanel from '../_components/SidebarItemPanel'
-import { ChartPieIcon, TvIcon } from '@heroicons/react/24/solid'
-import { ArchiveBoxArrowDownIcon } from '@heroicons/react/24/solid'
-import { PhoneArrowDownLeftIcon } from '@heroicons/react/24/outline'
+import { ReactNode } from 'react';
+import SidebarItemPanel from '../_components/SidebarItemPanel';
 
-
-function SidebarPanel() {
-  const path = usePathname()
-  const prefix = path.split('/')
-
+interface sidebarItem {
+  label: string;
+  ItemIcon: ReactNode;
+  isActive?: boolean;
+  path?: string;
+  sidebarChilds?: { label?: string; path?: string; isActive?: boolean; }[];
+}
+export default function SidebarPanel({
+  sidebarItems
+}: {
+  sidebarItems: sidebarItem[]
+}) {
   return (
     <>
       <aside className="sidebar">
@@ -26,65 +30,10 @@ function SidebarPanel() {
             className='mx-auto brand-logo-mini'
           />
         </div>
-        <div className='text-sm text-white/80'>
-          <SidebarItemPanel
-            label='dashboard'
-            ItemIcon={<ChartPieIcon className="w-6" />}
-            isActive={['', undefined].includes(prefix[2]) || (prefix[2] == 'pengguna' && prefix[4] == 'presensi-harian')}
-            path='#'
-          />
-          <SidebarItemPanel
-            label='Menu 1'
-            ItemIcon={<ArchiveBoxArrowDownIcon className="w-6" />}
-            path='#'
-          />
-          <SidebarItemPanel
-            label='Menu 2'
-            ItemIcon={<PhoneArrowDownLeftIcon className="w-6" />}
-            path='#'
-          />
-          <SidebarItemPanel
-            label='Menu 3'
-            ItemIcon={<TvIcon className="w-6" />}
-            path='#'
-          />
-          <SidebarItemPanel
-            label='Dropdown Menu'
-            ItemIcon={<TvIcon className="w-6" />}
-            sidebarChilds={[
-              <SidebarItemPanel
-                label='Submenu 1'
-                ItemIcon={<TvIcon className="w-6" />}
-                path='#' />,
-              <SidebarItemPanel
-                label='Submenu 2'
-                ItemIcon={<TvIcon className="w-6" />}
-                path='#' />
-            ]}
-          />
-          {/* <div className="sidebar-item sidebar-item-has-child">
-            <div className={`sidebar-link`}>
-              <div className="flex items-center gap-4">
-                <Cube className="text-xl" />
-                <div className="capitalize">Sidebar Has Child</div>
-              </div>
-              <div className="ml-auto">
-                <div className="sidebar-child-arrow">
-                  <CaretLeft className="text-sm" />
-                </div>
-              </div>
-            </div >
-            <div className="sidebar-child">
-              <Link href={`#`} className={`sidebar-link`}>
-                <span className="text-xl">-</span>
-                <div className="capitalize">child 1</div>
-              </Link>
-              <Link href={`#`} className={`sidebar-link`}>
-                <span className="text-xl">-</span>
-                <div className="capitalize">child 2</div>
-              </Link>
-            </div>
-          </div> */}
+        <div className='text-sm'>
+          {sidebarItems.map((sidebarItem, indexSidebarItem) => (
+            <SidebarItemPanel key={indexSidebarItem}{...sidebarItem} />
+          ))}
         </div>
       </aside>
       <div
@@ -102,8 +51,3 @@ function SidebarPanel() {
     </>
   )
 }
-
-
-
-
-export default SidebarPanel

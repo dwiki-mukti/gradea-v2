@@ -9,7 +9,7 @@
 }
 
 .table th {
-  @apply capitalize text-left;
+  @apply uppercase text-left;
 }
 
 
@@ -70,7 +70,15 @@
 
 .table-striped th,
 .table-striped td {
-  @apply whitespace-nowrap px-6 py-2;
+  @apply whitespace-nowrap px-6;
+}
+
+.table-striped th {
+  @apply py-2;
+}
+
+.table-striped td {
+  @apply py-1;
 }
 
 .table-striped th:first-of-type,

@@ -55,7 +55,7 @@ function Table({
     noHeader,
     noNumber,
     noSearch,
-    noPerPage,
+    noPerPage = true,
     noPaginate,
 
     leftElement,
@@ -172,14 +172,14 @@ function Table({
      */
     return (
         <>
-            <div className='bg-white'>
-                <div className="flex gap-4 flex-col-reverse md:flex-row py-4">
+            <div className='bg-white border-b'>
+                <div className="flex gap-4 flex-col-reverse md:flex-row py-4 px-card-body">
                     <div className="flex gap-2 text-xs">
                         {leftElement}
                     </div>
                     <div className='flex gap-2 md:ml-auto'>
                         {rightElement}
-                        {!noSearch && <Search className='rounded-full' onSubmit={handleSearch} />}
+                        {!noSearch && <Search onSubmit={handleSearch} />}
                         {!noPerPage && <PerPage ObjectParams={ObjectParams} setObjectParams={setObjectParams} />}
                     </div>
                 </div>
@@ -246,25 +246,25 @@ function Table({
                                                     {(actions?.includes('show') || actions?.[0] == '*') && (
                                                         <Link
                                                             href={`${pathName}/${primaryKey}`}
-                                                            className="btn-action rounded-full text-blue-400"
+                                                            className="btn-action border-blue-400 text-blue-400"
                                                         >
-                                                            <EyeIcon />
+                                                            <EyeIcon className='h-4' />
                                                         </Link>
                                                     )}
                                                     {(actions?.includes("edit") || actions?.[0] == "*") && (
                                                         <Link
                                                             href={`${pathName}/data/${primaryKey}`}
-                                                            className="btn-action rounded-full text-gray-500"
+                                                            className="btn-action border-yellow-500 text-yellow-500"
                                                         >
-                                                            <PencilSquareIcon />
+                                                            <PencilSquareIcon className='h-4' />
                                                         </Link>
                                                     )}
                                                     {(actions?.includes("delete") || actions?.[0] == "*") && (
                                                         <a
-                                                            className="btn-action rounded-full text-red-400"
+                                                            className="btn-action border-red-400 text-red-400"
                                                             onClick={() => setShowConfirmDelete(primaryKey)}
                                                         >
-                                                            <TrashIcon />
+                                                            <TrashIcon className='h-4' />
                                                         </a>
                                                     )}
                                                 </td>
@@ -282,7 +282,7 @@ function Table({
                     onApproved={handleDelete}
                 />
             </div>
-            <div className='pt-4 pb-8'>
+            <div className='pt-4 pb-8 px-card-body'>
                 {!noPaginate && (
                     <Paginate
                         onChange={(page) => {
@@ -314,7 +314,7 @@ function PerPage({
         <div className='relative flex items-center'>
             <FunnelIcon className='w-4 absolute left-4' />
             <select
-                className='btn-flat h-[2.25rem] pl-10 rounded-full border-none text-xxs bg-gray-100'
+                className='btn-flat h-[2.25rem] pl-10 border-none text-xxs bg-gray-100'
                 style={{ WebkitAppearance: 'none' }}
                 value={ObjectParams?.per_page}
                 onChange={(e) => {
