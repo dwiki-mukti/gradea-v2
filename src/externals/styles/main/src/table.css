@@ -73,12 +73,9 @@
   @apply whitespace-nowrap px-6;
 }
 
-.table-striped th {
-  @apply py-2;
-}
-
+.table-striped th,
 .table-striped td {
-  @apply py-1;
+  @apply py-2;
 }
 
 .table-striped th:first-of-type,

@@ -15,7 +15,7 @@ interface FormProps {
   fields: (typeFormInputProps | ReactNode)[];
   disabled?: boolean;
   onSubmit?: FormEventHandler<HTMLFormElement>;
-  stateHandler?: [typeStateInput, Dispatch<SetStateAction<typeStateInput>>],
+  stateHandler?: [typeStateForm, Dispatch<SetStateAction<typeStateForm>>],
   submitConfig?: {
     path: string,
     method?: string,
@@ -35,7 +35,7 @@ export default function Form({ fields,
   disabled
 }: FormProps) {
   const { setStatusCode } = useGlobalContext();
-  const [getter, setter] = stateHandler ?? useState<typeStateInput>({})
+  const [getter, setter] = stateHandler ?? useState<typeStateForm>({})
 
 
 
@@ -84,7 +84,7 @@ export default function Form({ fields,
       const newInvalids = emptyFields?.reduce((resultObj, emptyField) => (
         { ...resultObj, [emptyField.name]: ['Field tidak boleh kosong!'] }
       ), {})
-      setter((prev: typeStateInput) => ({
+      setter((prev: typeStateForm) => ({
         ...prev,
         invalids: { ...(prev.invalids), ...newInvalids }
       }))
@@ -104,7 +104,7 @@ export default function Form({ fields,
       api({ path: sourceDefaultValue.path, staleTime: 60 }).then(async (res) => {
         if (res.status == 200) {
           const defaultValueForm = (await res.json())?.data?.[sourceDefaultValue?.keyResponseJson] ?? {}
-          setter((prev: typeStateInput) => ({
+          setter((prev: typeStateForm) => ({
             ...(prev ?? {}),
             values: {
               ...(prev?.values ?? {}),
@@ -146,7 +146,6 @@ export default function Form({ fields,
           <div className='border-t flex justify-end pt-4'>
             <Button
               children='Simpan'
-              className='btn-lg'
               isLoading={getter.statusCode == 202}
               disabled={isInvalidForm(getter)}
             />

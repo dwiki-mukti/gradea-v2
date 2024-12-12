@@ -33,7 +33,7 @@ export default function Select({
 
     ...props
 }: typeSelect) {
-    const [getter, setter] = stateHandler ?? useState<typeStateInput>({})
+    const [getter, setter] = stateHandler ?? useState<typeStateForm>({})
     const refInput = useRef<HTMLInputElement>(null);
     const [IsFocus, setIsFocus] = useState(false);
     const [Search, setSearch] = useState('');
@@ -97,7 +97,7 @@ export default function Select({
 
     useEffect(() => {
         if ((validations?.required && !getter?.values?.[name] && !getter?.uncompleteds?.includes(name))) {
-            setter((prev: typeStateInput) => ({
+            setter((prev: typeStateForm) => ({
                 ...prev,
                 uncompleteds: [...(prev?.uncompleteds ?? []), name]
             }))
@@ -195,7 +195,7 @@ export default function Select({
                         onChange={(e) => {
                             if (onChange) onChange(e)
                             const newValue = e.target.value
-                            setter((prev: typeStateInput) => {
+                            setter((prev: typeStateForm) => {
                                 const uncompleteds = prev?.uncompleteds?.filter((res) => (res != name)) ?? []
                                 const invalids = { ...(prev.invalids ?? {}) }
                                 const values = { ...(prev.values ?? {}) }

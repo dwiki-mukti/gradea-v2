@@ -17,7 +17,7 @@ export interface typeInputProps extends Omit<
     >, 'defaultValue'> {
     name: string,
     type?: HTMLInputTypeAttribute | 'select' | 'textarea',
-    stateHandler?: [typeStateInput, Dispatch<SetStateAction<typeStateInput>>],
+    stateHandler?: [typeStateForm, Dispatch<SetStateAction<typeStateForm>>],
     label?: ReactNode,
     noLabel?: boolean,
     isCleanup?: boolean,

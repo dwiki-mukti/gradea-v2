@@ -12,7 +12,7 @@ export interface typeTextAreaProps extends Omit<DetailedHTMLProps<
     noLabel?: boolean;
     isCleanup?: boolean;
     validations?: typeValidations;
-    stateHandler?: [typeStateInput, Dispatch<SetStateAction<typeStateInput>>];
+    stateHandler?: [typeStateForm, Dispatch<SetStateAction<typeStateForm>>];
 }
 
 export default function TextArea({
@@ -31,7 +31,7 @@ export default function TextArea({
     ...props
 }: typeTextAreaProps) {
     const refInput = useRef<HTMLTextAreaElement>(null)
-    const [getter, setter] = stateHandler ?? useState<typeStateInput>({})
+    const [getter, setter] = stateHandler ?? useState<typeStateForm>({})
 
 
 
@@ -54,7 +54,7 @@ export default function TextArea({
 
         // push to state
         if (addToUncompleteds || removeFromUncompleteds || invalidMessagesIsChange || isChangeValue) {
-            setter((prev: typeStateInput) => {
+            setter((prev: typeStateForm) => {
                 const uncompleteds = (prev?.uncompleteds ?? []).filter((uncompleted) => (uncompleted != name))
                 if (addToUncompleteds) uncompleteds.push(name)
 
@@ -99,7 +99,7 @@ export default function TextArea({
                 value={getter?.values?.[name] ?? ''}
                 onInput={(e) => {
                     if (onInput) onInput(e)
-                    setter((prev: typeStateInput) => ({
+                    setter((prev: typeStateForm) => ({
                         ...prev,
                         values: { ...(prev.values), [name]: (e.target as HTMLInputElement).value }
                     }))

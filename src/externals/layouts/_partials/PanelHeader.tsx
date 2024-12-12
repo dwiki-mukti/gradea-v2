@@ -68,8 +68,8 @@ function Profile() {
     <div className='relative'>
       <div className='flex items-center gap-2 [&:hover_*]:text-primary cursor-pointer' onClick={() => setShowProfile(true)}>
         <div className='text-right'>
-          <div className='font-semibold leading-6 text-gray-700'>Dwiki</div>
-          <div className='text-[10px] leading-[9px]'>Admin</div>
+          <div className='font-semibold leading-6 text-gray-700'>{UserAuthed?.name ?? 'Dwiki I. P. M'}</div>
+          <div className='text-[10px] leading-[9px]'>{UserAuthed?.uuid ?? 'dwiki@gmail.com'}</div>
         </div>
         <div className="header-icon-square">
           <UserCircleIcon className="w-[2.5rem]" />
@@ -79,11 +79,11 @@ function Profile() {
         <Dropdown show={ShowProfile} toHide={setShowProfile} className='w-[20rem] right-0 text-center overflow-hidden'>
           <div className="py-4">
             <UserCircleIcon className='w-[4.5rem] mx-auto' />
-            <div className="text-lg truncate mt-1">{UserAuthed?.name}</div>
-            <div className="text-xs text-gray-600 mt-1">{UserAuthed?.uuid}</div>
+            <div className="text-lg truncate mt-1">{UserAuthed?.name ?? 'Dwiki I. P. M'}</div>
+            <div className="text-xs text-gray-600 mt-1">{UserAuthed?.profile_type ?? 'Admin'}</div>
           </div>
           <div
-            className="py-3 border-t cursor-pointer text-red-500 hover:bg-red-500 hover:text-white"
+            className="py-3 border-t cursor-pointer text-red-600 hover:bg-red-600 hover:text-white"
             onClick={() => { setAlertLogout(true) }}
           >
             <div className="flex items-center justify-center gap-1">

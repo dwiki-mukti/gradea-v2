@@ -25,7 +25,7 @@ export default function SidebarItemPanel({
                 if (sidebarChilds?.length) onClickSidenavHasChild(e)
             }}>
                 <div className="flex items-center">
-                    <div className='w-[2rem]'>
+                    <div className='w-[2.5rem] flex items-center justify-center'>
                         {ItemIcon ? ItemIcon : (<span>-</span>)}
                     </div>
                     <div className="sidebar-label capitalize">{label}</div>
@@ -33,8 +33,8 @@ export default function SidebarItemPanel({
 
                 {sidebarChilds?.length && (
                     <div className="ml-auto">
-                        <div className="sidebar-child-arrow">
-                            <ChevronLeftIcon className="w-3" />
+                        <div className="sidebar-child-arrow w-[2.5rem]">
+                            <ChevronLeftIcon className="w-3 mx-auto" />
                         </div>
                     </div>
                 )}
@@ -43,7 +43,7 @@ export default function SidebarItemPanel({
                 <div className="sidebar-child">
                     {sidebarChilds.map((sidebarChild, indexSidebarChilds) => (
                         <Fragment key={indexSidebarChilds}>
-                            <Link href={sidebarChild.path ?? '#'} className={`sidebar-link ${sidebarChild.isActive ? 'text-primary' : ''}`}>
+                            <Link href={sidebarChild.path ?? '#'} className={`sidebar-link ${sidebarChild.isActive ? 'active' : ''}`}>
                                 <div className="icon">{sidebarChild.label?.[0] ?? '?'}</div>
                                 <div className="sidebar-label capitalize">{sidebarChild.label}</div>
                             </Link>

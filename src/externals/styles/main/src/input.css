@@ -29,7 +29,7 @@ input {
 }
 
 .input-form {
-  @apply w-full h-[2.25rem] bg-white;
+  @apply w-full h-[2.5rem] bg-white;
   @apply px-3 border rounded-md shadow-sm;
 }
 

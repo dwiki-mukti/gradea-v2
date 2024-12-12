@@ -58,7 +58,7 @@ const config: Config = {
         '.card-footer': {},
         '.card-title': {},
         '.btn': {},
-        '.btn-lg': {},
+        '.btn-sm': {},
         '.btn-flat': {},
         '.btn-outline': {},
         '.btn-action': {},

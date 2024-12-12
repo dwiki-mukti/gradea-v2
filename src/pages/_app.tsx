@@ -8,6 +8,8 @@ import React, { ReactElement, ReactNode, useState } from "react";
 import Error from "next/error";
 import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
+import Head from "next/head";
+import { GlobalContext } from "@/externals/contexts/GlobalContext";
 const font = Inter({ subsets: ["latin"] });
 
 export type NextPageWithLayout<P = "", IP = P> = NextPage<P, IP> & {
@@ -39,7 +41,9 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
     } else {
       return (
         <PanelLayout>
-          <Component {...pageProps} />
+          <GlobalContext.Provider value={{ UserAuthed, setUserAuthed, StatusCode, setStatusCode }}>
+            <Component {...pageProps} />
+          </GlobalContext.Provider>
         </PanelLayout>
       )
     }

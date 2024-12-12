@@ -24,7 +24,7 @@ export default function InputDate({
     & { type?: 'date' | 'datetime-local' }
 ) {
     const refInput = useRef<HTMLInputElement>(null)
-    const [getter, setter] = stateHandler ?? useState<typeStateInput>({})
+    const [getter, setter] = stateHandler ?? useState<typeStateForm>({})
     function sanitizeValue(newVal: any) {
         if (newVal) {
             return (type == 'datetime-local') ? formatValueInputDateTime(newVal) : formatValueInputDate(newVal)
@@ -56,7 +56,7 @@ export default function InputDate({
 
         // push to state
         if (addToUncompleteds || removeFromUncompleteds || invalidMessagesIsChange || isSyncPropsValue || isSyncValueElement) {
-            setter((prev: typeStateInput) => {
+            setter((prev: typeStateForm) => {
                 const uncompleteds = (prev?.uncompleteds ?? []).filter((uncompleted) => (uncompleted != name))
                 if (addToUncompleteds) uncompleteds.push(name)
 
@@ -109,7 +109,7 @@ export default function InputDate({
                 // value={getter?.values?.[name] ?? ''}
                 onInput={(e) => {
                     if (onInput) onInput(e)
-                    setter((prev: typeStateInput) => ({
+                    setter((prev: typeStateForm) => ({
                         ...prev,
                         values: { ...(prev.values), [name]: (e.target as HTMLInputElement).value }
                     }))

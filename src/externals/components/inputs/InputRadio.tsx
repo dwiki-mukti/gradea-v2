@@ -18,7 +18,7 @@ export default function InputRadio({
 
     ...props
 }: Omit<typeInputProps, 'validations' | 'aspectRatio' | 'options' | 'path' | 'onSearch' | 'noSearch' | 'noUnset' | 'type'>) {
-    const [getter, setter] = stateHandler ?? useState<typeStateInput>({})
+    const [getter, setter] = stateHandler ?? useState<typeStateForm>({})
 
     return (
         <>
@@ -30,7 +30,7 @@ export default function InputRadio({
                     type={'radio'}
                     onChange={(e) => {
                         if (onChange) onChange(e)
-                        setter((prev: typeStateInput) => ({
+                        setter((prev: typeStateForm) => ({
                             ...prev,
                             values: { ...((prev)?.values ?? {}), [name]: (e.target.value) }
                         }))

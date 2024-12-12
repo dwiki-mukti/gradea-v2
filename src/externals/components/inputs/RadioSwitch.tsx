@@ -7,7 +7,7 @@ export default function RadioSwitch({
     onChange,
     disabled,
 }: {
-    stateHandler?: [typeStateInput, Dispatch<SetStateAction<typeStateInput>>],
+    stateHandler?: [typeStateForm, Dispatch<SetStateAction<typeStateForm>>],
     options: {
         label?: ReactNode,
         value: any
@@ -18,7 +18,7 @@ export default function RadioSwitch({
     disabled?: boolean
 }) {
     const refRadioInput = useRef<(HTMLInputElement | null)[]>([]);
-    const [getter, setter] = stateHandler ?? useState<typeStateInput>({});
+    const [getter, setter] = stateHandler ?? useState<typeStateForm>({});
 
     useEffect(() => {
         if (refRadioInput.current.length && !getter?.values?.[name] && options?.[0]) {
@@ -49,7 +49,7 @@ export default function RadioSwitch({
                             onChange={(e) => {
                                 if (!disabled) {
                                     if (onChange) onChange(e)
-                                    setter((prev: typeStateInput) => ({
+                                    setter((prev: typeStateForm) => ({
                                         ...(prev ?? {}),
                                         values: {
                                             ...(prev.values ?? {}),
