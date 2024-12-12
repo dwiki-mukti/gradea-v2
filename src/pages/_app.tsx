@@ -7,6 +7,7 @@ import { NextPage } from "next";
 
 import { Inter } from "next/font/google";
 import Head from "next/head";
+import { GlobalContext } from "@/externals/contexts/GlobalContext";
 const font = Inter({ subsets: ["latin"] });
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -19,11 +20,11 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [UserAuthed, setUserAuthed] = useState({});
   const [StatusCode, setStatusCode] = useState(200);
 
-  return (
-    <div className={font.className}>
-      <PanelLayout>
+  return getLayout(
+    <main className={font.className}>
+      <GlobalContext.Provider value={{ UserAuthed, setUserAuthed, StatusCode, setStatusCode }}>
         <Component {...pageProps} />
-      </PanelLayout>
-    </div>
+      </GlobalContext.Provider>
+    </main>
   );
 }

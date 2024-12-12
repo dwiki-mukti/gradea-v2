@@ -34,7 +34,7 @@ export default function Button({
 }: (typeButtonProps)) {
     return (
         <WrapperButton
-            className={cn(varian, { 'bg-primary-gradient': varian == 'btn', 'btn-loading': isLoading }, className)}
+            className={cn(varian, { 'btn-loading': isLoading }, className)}
             {...props}
             disabled={isLoading || disabled}
         >{children}</WrapperButton>

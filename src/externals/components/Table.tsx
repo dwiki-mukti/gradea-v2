@@ -245,26 +245,29 @@ function Table({
                                                     {customAction ? (customAction(dataRow, primaryKey) as ReactNode) : ''}
                                                     {(actions?.includes('show') || actions?.[0] == '*') && (
                                                         <Link
-                                                            href={`${pathName}/${primaryKey}`}
-                                                            className="btn-action border-blue-400 text-blue-400"
+                                                            href={`${pathName}${pathName.slice(-1) == '/' ? '' : '/'}${primaryKey}`}
+                                                            className="btn-action h-[1.75rem] px-2 bg-blue-500 text-white"
                                                         >
-                                                            <EyeIcon className='h-4' />
+                                                            <EyeIcon className='h-4 mb-[1px]' />
+                                                            <span>Detail</span>
                                                         </Link>
                                                     )}
                                                     {(actions?.includes("edit") || actions?.[0] == "*") && (
                                                         <Link
-                                                            href={`${pathName}/data/${primaryKey}`}
-                                                            className="btn-action border-yellow-500 text-yellow-500"
+                                                            href={`${pathName}${pathName.slice(-1) == '/' ? '' : '/'}data/${primaryKey}`}
+                                                            className="btn-action h-[1.75rem] px-2 bg-yellow-400 text-white"
                                                         >
                                                             <PencilSquareIcon className='h-4' />
+                                                            <span>Edit</span>
                                                         </Link>
                                                     )}
                                                     {(actions?.includes("delete") || actions?.[0] == "*") && (
                                                         <a
-                                                            className="btn-action border-red-400 text-red-400"
+                                                            className="btn-action h-[1.75rem] px-2 bg-red-500 text-white"
                                                             onClick={() => setShowConfirmDelete(primaryKey)}
                                                         >
                                                             <TrashIcon className='h-4' />
+                                                            <span>Hapus</span>
                                                         </a>
                                                     )}
                                                 </td>

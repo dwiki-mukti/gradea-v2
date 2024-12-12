@@ -3,15 +3,20 @@
 import React, { ReactNode, useEffect } from 'react'
 import { usePathname } from 'next/navigation';
 import { usePanelContext } from '../contexts/PanelContext';
-import PanelSidebar from './_partials/PanelSidebar';
+import PanelSidebar, { typeSidebarItem } from './_partials/PanelSidebar';
 import PanelHeader from './_partials/PanelHeader';
 // import BreadcrumbStack from '../components/breadcumbs/BreadcrumbStack';
-import { ChartPieIcon, DocumentCheckIcon, HomeModernIcon, LockClosedIcon, UsersIcon } from '@heroicons/react/24/solid';
 
 export default function PanelLayout({
-    children
+    children,
+    sidebarItems,
+    // leftItemNavbar,
+    // rightItemNavbar
 }: {
-    children: ReactNode
+    children?: ReactNode,
+    sidebarItems?: typeSidebarItem[],
+    // leftItemNavbar?: ReactNode,
+    // rightItemNavbar?: ReactNode,
 }) {
     const { BreadcumbValue, setBreadcumbValue } = usePanelContext();
     const pathName = usePathname();
@@ -24,52 +29,7 @@ export default function PanelLayout({
         <div className="wrapper bg-slate-100" id='wrapper-panel'>{/* max-w-screen-2xl */}
             <div className="wrapper-content">
                 <div>
-                    <PanelSidebar sidebarItems={[
-                        {
-                            label: 'Dashboard',
-                            ItemIcon: <ChartPieIcon className="w-5" />,
-                            path: '/dashboard'
-                        },
-                        {
-                            label: 'Vendor',
-                            ItemIcon: <HomeModernIcon className="w-5" />,
-                            sidebarChilds: [
-                                {
-                                    label: 'Daftar Vendor',
-                                    isActive: true,
-                                    path: '/vendor'
-                                },
-                                {
-                                    label: 'Vendor Blacklist',
-                                    path: '/vendor/blacklist',
-                                },
-                            ]
-                        },
-                        {
-                            label: 'Pengajuan',
-                            ItemIcon: <DocumentCheckIcon className="w-5" />,
-                            sidebarChilds: [
-                                {
-                                    label: 'Vendor Baru (10)',
-                                    path: '/approval/vendor/new'
-                                },
-                                {
-                                    label: 'Blacklist',
-                                    path: '/approval/vendor/blacklist'
-                                },
-                                {
-                                    label: 'Perubahan Data',
-                                    path: '/approval/vendor/update'
-                                },
-                            ]
-                        },
-                        {
-                            label: 'Logout',
-                            ItemIcon: <LockClosedIcon className="w-6" />,
-                            path: '/auth/logout'
-                        },
-                    ]}
-                    />
+                    <PanelSidebar sidebarItems={sidebarItems ?? []} />
                 </div>
                 <div className="container-fluid">
                     <div data-old-className='px-panel'>

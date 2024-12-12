@@ -9,20 +9,25 @@
 .btn-outline,
 .btn-action,
 .btn {
-    @apply inline-flex items-center justify-center;
-    @apply h-[2rem] px-2 rounded-md;
+    @apply inline-flex gap-1 items-center justify-center;
+    @apply h-[2.5rem] rounded;
     @apply cursor-pointer;
     @apply text-xs capitalize whitespace-nowrap;
 }
 
+.btn-flat,
 .btn-outline,
-.btn-action,
+.btn {
+    @apply px-3;
+}
+
+.btn-outline,
 .btn {
     @apply shadow-sm border;
 }
 
 .btn {
-    @apply bg-primary text-contras-primary;
+    @apply bg-primary hover:bg-primary/90 text-contras-primary;
 }
 
 .btn-outline {
@@ -43,6 +48,10 @@ button:disabled {
     background-color: rgba(0, 0, 0, 0.2);
     border-color: transparent;
     cursor: not-allowed;
+}
+
+.btn-sm {
+    @apply h-[2rem] px-2 text-xxs rounded-md;
 }
 
 

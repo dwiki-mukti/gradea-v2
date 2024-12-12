@@ -3,7 +3,7 @@
 import { ReactNode } from 'react';
 import SidebarItemPanel from '../_components/SidebarItemPanel';
 
-interface sidebarItem {
+export interface typeSidebarItem {
   label: string;
   ItemIcon: ReactNode;
   isActive?: boolean;
@@ -13,12 +13,12 @@ interface sidebarItem {
 export default function SidebarPanel({
   sidebarItems
 }: {
-  sidebarItems: sidebarItem[]
+  sidebarItems: typeSidebarItem[]
 }) {
   return (
     <>
       <aside className="sidebar">
-        <div className="text-center pb-8 pt-10">
+        <div className="text-center pb-6 pt-10">
           <img
             src={'/public/images/main-logo.png'}
             alt='logo-app'
@@ -30,9 +30,9 @@ export default function SidebarPanel({
             className='mx-auto brand-logo-mini'
           />
         </div>
-        <div className='text-sm'>
+        <div>
           {sidebarItems.map((sidebarItem, indexSidebarItem) => (
-            <SidebarItemPanel key={indexSidebarItem}{...sidebarItem} />
+            <SidebarItemPanel key={indexSidebarItem} {...sidebarItem} />
           ))}
         </div>
       </aside>

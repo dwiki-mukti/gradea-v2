@@ -18,12 +18,12 @@ export default function InputCheck({
 
     ...props
 }: Omit<typeInputProps, 'validations' | 'aspectRatio' | 'options' | 'path' | 'onSearch' | 'noSearch' | 'noUnset' | 'type'>) {
-    const [getter, setter] = stateHandler ?? useState<typeStateInput>({})
+    const [getter, setter] = stateHandler ?? useState<typeStateForm>({})
 
 
     useEffect(() => {
         if (defaultChecked != undefined && getter.values?.[name] == undefined) {
-            setter((prev: typeStateInput) => {
+            setter((prev: typeStateForm) => {
                 return ({
                     ...prev,
                     values: {
@@ -46,7 +46,7 @@ export default function InputCheck({
                     type={'checkbox'}
                     onChange={(e) => {
                         if (onChange) onChange(e)
-                        setter((prev: typeStateInput) => {
+                        setter((prev: typeStateForm) => {
                             return ({
                                 ...prev,
                                 values: {

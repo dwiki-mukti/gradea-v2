@@ -12,18 +12,16 @@ export default function NavCard({
     }>
 }) {
     return (
-        <div className='pt-4 border-b'>
-            <div className='flex gap-4 text-sm capitalize'>
-                {navigations.map((navigation, indexNavigation) => (
-                    <Link
-                        key={indexNavigation}
-                        href={navigation.isActive ? '#' : navigation.link}
-                        className={cn('pb-3 px-card-body border-b-2 border-transparent', (navigation.isActive ? 'border-primary text-primary font-semibold cursor-default' : 'hover:text-primary'))}
-                    >
-                        {navigation.label}
-                    </Link>
-                ))}
-            </div>
+        <div className='flex gap-4 text-sm capitalize'>
+            {navigations.map((navigation, indexNavigation) => (
+                <Link
+                    key={indexNavigation}
+                    href={navigation.isActive ? '#' : navigation.link}
+                    className={cn('pb-3 pt-4 px-card-body border-b-2 border-transparent', (navigation.isActive ? 'border-primary text-primary font-semibold cursor-default' : 'hover:text-primary'))}
+                >
+                    {navigation.label}
+                </Link>
+            ))}
         </div>
     )
 }

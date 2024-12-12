@@ -24,7 +24,7 @@ export default function InputFile({
     ...props
 }: Omit<typeInputProps, 'validations' | 'options' | 'path' | 'onSearch' | 'noSearch' | 'noUnset'>) {
     const refInput = useRef<HTMLInputElement>(null);
-    const [getter, setter] = stateHandler ?? useState<typeStateInput>({});
+    const [getter, setter] = stateHandler ?? useState<typeStateForm>({});
     const [ShowModal, setShowModal] = useState(false);
 
 
@@ -39,7 +39,7 @@ export default function InputFile({
 
     useEffect(() => {
         if (required && refInput.current && !refInput.current.files?.length && !getter?.invalids?.[name]?.length) {
-            setter((prev: typeStateInput) => ({
+            setter((prev: typeStateForm) => ({
                 ...(prev ?? {}),
                 uncompleteds: [...((prev?.uncompleteds ?? []).filter((uncompleted) => (uncompleted != name))), name]
             }))
@@ -83,7 +83,7 @@ export default function InputFile({
                         onChange={(e) => {
                             const blobFile = e.target.files?.[0]
 
-                            setter((prev: typeStateInput) => {
+                            setter((prev: typeStateForm) => {
                                 const invalids: string[] = []
                                 if (!blobFile && required) {
                                     invalids.push('Field tidak boleh kosong!')
