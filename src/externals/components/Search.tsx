@@ -33,7 +33,7 @@ export default function Search({
                 }}
                 className='my-auto ml-[-2rem] w-[1.5rem] cursor-pointer text-[1.25rem] text-gray-400'
             >
-                <MagnifyingGlassIcon />
+                <MagnifyingGlassIcon className="w-5" />
             </div>
         </div>
     )

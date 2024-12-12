@@ -1,14 +1,22 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
-import SidebarItemPanel from '../_components/SidebarItemPanel'
-import { ChartPieIcon } from '@heroicons/react/24/solid'
+import SidebarItemPanel, { onClickSidenavHasChild } from '../_components/SidebarItemPanel'
+import { ChevronLeftIcon, CubeIcon } from '@heroicons/react/24/solid'
+import { ReactNode } from 'react';
+import Link from 'next/link';
 
-
-function SidebarPanel() {
-  const path = usePathname()
-  const prefix = path.split('/')
-
+interface sidebarItem {
+  label: string;
+  ItemIcon: ReactNode;
+  isActive?: boolean;
+  path?: string;
+  sidebarChilds?: { label?: string; path?: string; isActive?: boolean; }[];
+}
+export default function SidebarPanel({
+  sidebarItems
+}: {
+  sidebarItems: sidebarItem[]
+}) {
   return (
     <>
       <aside className="sidebar">
@@ -22,36 +30,10 @@ function SidebarPanel() {
             className='mx-auto'
           />
         </div>
-        <div className='text-sm text-white/80'>
-          <SidebarItemPanel
-            label='dashboard'
-            ItemIcon={<ChartPieIcon className="w-6" />}
-            isActive={['', undefined].includes(prefix[2]) || (prefix[2] == 'pengguna' && prefix[4] == 'presensi-harian')}
-            path='/panel'
-          />
-          {/* <div className="sidebar-item sidebar-item-has-child">
-            <div className={`sidebar-link`}>
-              <div className="flex items-center gap-4">
-                <Cube className="text-xl" />
-                <div className="capitalize">Sidebar Has Child</div>
-              </div>
-              <div className="ml-auto">
-                <div className="sidebar-child-arrow">
-                  <CaretLeft className="text-sm" />
-                </div>
-              </div>
-            </div >
-            <div className="sidebar-child">
-              <Link href={`#`} className={`sidebar-link`}>
-                <span className="text-xl">-</span>
-                <div className="capitalize">child 1</div>
-              </Link>
-              <Link href={`#`} className={`sidebar-link`}>
-                <span className="text-xl">-</span>
-                <div className="capitalize">child 2</div>
-              </Link>
-            </div>
-          </div> */}
+        <div className='text-sm'>
+          {sidebarItems.map((sidebarItem, indexSidebarItem) => (
+            <SidebarItemPanel key={indexSidebarItem}{...sidebarItem} />
+          ))}
         </div>
       </aside>
       <div
@@ -69,8 +51,3 @@ function SidebarPanel() {
     </>
   )
 }
-
-
-
-
-export default SidebarPanel

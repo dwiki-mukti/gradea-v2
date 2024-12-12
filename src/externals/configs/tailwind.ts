@@ -8,7 +8,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'primary': '#0174BE', //dc5315
+        'primary': '#e93339', //dc5315
         'contras-primary': '#fff',
         'secondary': '#FC4100',
         'contras-secondary': '#fff',

@@ -9,15 +9,15 @@
 }
 
 .card-header {
-    @apply flex justify-between items-center pt-4 pb-4 border-b;
+    @apply flex justify-between items-center border-b;
 }
 
 .card-title {
-    @apply font-semibold grow capitalize mt-2;
+    @apply font-semibold capitalize mt-2 flex items-center pt-2 pb-3 ;
 }
 
+.card-title,
 .px-card-body,
-.card-header,
 .card-body,
 .card-footer {
     @apply px-6;

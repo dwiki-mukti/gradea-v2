@@ -16,8 +16,8 @@ export default function PanelHeader() {
 
   return (
     <>
-      <header>
-        <div className="header">
+      <header className='bg-white'>
+        <div className="header px-panel">
           <div className="flex items-center">
             <div
               className="header-icon-square -ml-2"
@@ -66,8 +66,14 @@ function Profile() {
   const [AlertLogout, setAlertLogout] = useState(false)
   return (
     <div className='relative'>
-      <div className="header-icon-square" onClick={() => setShowProfile(true)}>
-        <UserCircleIcon className="w-[32px]" />
+      <div className='flex items-center gap-2 [&:hover_*]:text-primary cursor-pointer' onClick={() => setShowProfile(true)}>
+        <div className='text-right'>
+          <div className='font-semibold leading-6 text-gray-700'>Dwiki</div>
+          <div className='text-[10px] leading-[9px]'>Admin</div>
+        </div>
+        <div className="header-icon-square">
+          <UserCircleIcon className="w-[2.5rem]" />
+        </div>
       </div>
       <div className='text-black'>
         <Dropdown show={ShowProfile} toHide={setShowProfile} className='w-[20rem] right-0 text-center overflow-hidden'>

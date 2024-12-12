@@ -5,8 +5,12 @@
      *
      * VARIABLE LAYOUT PADDING X
      */
-    --px-desktop: 1.5rem;
+    --px-desktop: 1rem;
     --px-mobile: 0px;
+}
+
+html{
+    @apply text-[14px] text-gray-500;
 }
 
 section,

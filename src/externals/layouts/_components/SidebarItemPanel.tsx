@@ -1,6 +1,6 @@
 import { ChevronLeftIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
-import React, { Fragment, MouseEvent, ReactNode } from 'react'
+import React, { Fragment, ReactNode } from 'react'
 
 export default function SidebarItemPanel({
     label,
@@ -15,14 +15,15 @@ export default function SidebarItemPanel({
     ItemIcon?: ReactNode,
     path?: string,
     className?: string,
-    sidebarChilds?: Array<ReactNode>
+    sidebarChilds?: { label?: string; path?: string; isActive?: boolean; }[];
 }) {
     return (
-        <div className={`${sidebarChilds?.length ? `sidebar-item-has-child ${isActive ? 'active sidebar-item-has-child-open' : ''}` : `sidebar-item ${isActive ? 'active' : ''}`} ${className ?? ''}`}>
+        <div
+            className={`${sidebarChilds?.length ? `sidebar-item-has-child ${isActive ? 'active sidebar-item-has-child-open' : ''}` : `sidebar-item ${isActive ? 'active' : ''}`} ${className ?? ''}`}
+        >
             <Link href={path ?? ''} className={`sidebar-link`} onClick={(e) => {
                 if (sidebarChilds?.length) onClickSidenavHasChild(e)
             }}>
-
                 <div className="flex items-center">
                     <div className='w-[2rem]'>
                         {ItemIcon ? ItemIcon : (<span>-</span>)}
@@ -32,17 +33,19 @@ export default function SidebarItemPanel({
 
                 {sidebarChilds?.length && (
                     <div className="ml-auto">
-                        <div className="sidebar-item-child-arrow">
-                            <ChevronLeftIcon className="text-sm" />
+                        <div className="sidebar-child-arrow">
+                            <ChevronLeftIcon className="w-3" />
                         </div>
                     </div>
                 )}
             </Link>
             {sidebarChilds?.length && (
-                <div className="sidebar-item-child">
+                <div className="sidebar-child">
                     {sidebarChilds.map((sidebarChild, indexSidebarChilds) => (
                         <Fragment key={indexSidebarChilds}>
-                            {sidebarChild}
+                            <Link href={sidebarChild.path ?? '#'} className={`sidebar-link ${sidebarChild.isActive ? 'text-primary' : ''}`}>
+                                <div className="capitalize">{sidebarChild.label}</div>
+                            </Link>
                         </Fragment>
                     ))}
                 </div>
@@ -56,7 +59,9 @@ export default function SidebarItemPanel({
 
 
 
-function onClickSidenavHasChild(e: MouseEvent) {
+
+
+export function onClickSidenavHasChild(e: any) {
     e.preventDefault()
     const classList = (e.target as Element).closest('.sidebar-item-has-child')?.classList
     if (classList?.contains('sidebar-item-has-child-open')) {
