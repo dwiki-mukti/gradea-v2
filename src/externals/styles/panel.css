@@ -9,7 +9,6 @@
 }
 
 #wrapper-panel {
-
   /**
    *
    *
@@ -77,7 +76,8 @@
     @apply lg:relative;
     @apply bg-white;
     /* @apply min-[2880px]:min-h-full; */
-    width: var(--width-sidebar);
+    @apply w-[var(--width-sidebar)];
+    /* width: var(--width-sidebar); */
     /* transition: margin-left 300ms ease, width 300ms ease; */
     @apply duration-fast;
     transition-property: margin-left, width;
@@ -86,6 +86,17 @@
   .sidebar-overlay {
     @apply fixed z-[7] inset-0 bg-black/30;
     @apply lg:hidden;
+  }
+
+  .sidebar .brand-logo {
+    height: auto;
+    width: 7rem;
+  }
+
+  .sidebar .brand-logo-mini {
+    @apply hidden;
+    height: auto;
+    width: 2rem;
   }
 
   /**
@@ -97,6 +108,7 @@
   .sidebar-item-has-child,
   .sidebar-item {
     @apply rounded-md mx-3;
+    @apply text-secondary;
   }
 
   .sidebar-item-child {
@@ -108,7 +120,7 @@
   @apply bg-slate-100;
 } */
 
-  .sidebar-item-has-child-open>.sidebar-item-child {
+  .sidebar-item-has-child-open > .sidebar-item-child {
     @apply block bg-slate-100;
   }
 
@@ -123,14 +135,15 @@
     @apply h-[2rem];
   }
 
-  *:not(.sidebar-item-child)>.sidebar-item-has-child.active>.sidebar-link,
-  *:not(.sidebar-item-child)>.sidebar-item.active>.sidebar-link {
+  *:not(.sidebar-item-child) > .sidebar-item-has-child.active > .sidebar-link,
+  *:not(.sidebar-item-child) > .sidebar-item.active > .sidebar-link {
     @apply bg-secondary text-contras-secondary;
   }
 
-  .sidebar-item-child .sidebar-item.active>.sidebar-link,
-  .sidebar-item-has-child-open>.sidebar-link,
-  *:not(.sidebar-item.active):not(.sidebar-item-has-child.active)>.sidebar-link:hover {
+  .sidebar-item-child .sidebar-item.active > .sidebar-link,
+  .sidebar-item-has-child-open > .sidebar-link,
+  *:not(.sidebar-item.active):not(.sidebar-item-has-child.active)
+    > .sidebar-link:hover {
     @apply ml-1 duration-200;
     @apply text-secondary;
   }
@@ -144,10 +157,26 @@
   }
 }
 
-.sidebar-collapse .sidebar {
-  margin-left: calc(var(--width-sidebar) * -1);
-}
+/* Gunakan #wrapper-panel, agar tidak perlu mengubah style menjadi !important  */
+/* Order level css */
+.sidebar-collapse #wrapper-panel {
+  .sidebar {
+    @apply w-0 lg:w-[calc(var(--width-sidebar)_*_0.3)];
+  }
+  .sidebar .brand-logo {
+    @apply hidden;
+  }
+  .sidebar .brand-logo-mini {
+    @apply !block;
+  }
+  .sidebar .sidebar-link .sidebar-label {
+    @apply hidden;
+  }
+  .sidebar-overlay {
+    @apply hidden;
+  }
 
-.sidebar-collapse .sidebar-overlay {
-  @apply hidden;
+  .sidebar-item-has-child .sidebar-item {
+    @apply mx-0;
+  }
 }

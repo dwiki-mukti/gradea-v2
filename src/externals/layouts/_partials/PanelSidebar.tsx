@@ -2,7 +2,9 @@
 
 import { usePathname } from 'next/navigation'
 import SidebarItemPanel from '../_components/SidebarItemPanel'
-import { ChartPieIcon } from '@heroicons/react/24/solid'
+import { ChartPieIcon, TvIcon } from '@heroicons/react/24/solid'
+import { ArchiveBoxArrowDownIcon } from '@heroicons/react/24/solid'
+import { PhoneArrowDownLeftIcon } from '@heroicons/react/24/outline'
 
 
 function SidebarPanel() {
@@ -16,10 +18,12 @@ function SidebarPanel() {
           <img
             src={'/public/images/main-logo.png'}
             alt='logo-app'
-            // width={160}
-            // height={0}
-            style={{ height: 'auto', width: '7rem' }}
-            className='mx-auto'
+            className='mx-auto brand-logo'
+          />
+          <img
+            src={'/public/images/main-logo-mini.png'}
+            alt='logo-app'
+            className='mx-auto brand-logo-mini'
           />
         </div>
         <div className='text-sm text-white/80'>
@@ -27,7 +31,36 @@ function SidebarPanel() {
             label='dashboard'
             ItemIcon={<ChartPieIcon className="w-6" />}
             isActive={['', undefined].includes(prefix[2]) || (prefix[2] == 'pengguna' && prefix[4] == 'presensi-harian')}
-            path='/panel'
+            path='#'
+          />
+          <SidebarItemPanel
+            label='Menu 1'
+            ItemIcon={<ArchiveBoxArrowDownIcon className="w-6" />}
+            path='#'
+          />
+          <SidebarItemPanel
+            label='Menu 2'
+            ItemIcon={<PhoneArrowDownLeftIcon className="w-6" />}
+            path='#'
+          />
+          <SidebarItemPanel
+            label='Menu 3'
+            ItemIcon={<TvIcon className="w-6" />}
+            path='#'
+          />
+          <SidebarItemPanel
+            label='Dropdown Menu'
+            ItemIcon={<TvIcon className="w-6" />}
+            sidebarChilds={[
+              <SidebarItemPanel
+                label='Submenu 1'
+                ItemIcon={<TvIcon className="w-6" />}
+                path='#' />,
+              <SidebarItemPanel
+                label='Submenu 2'
+                ItemIcon={<TvIcon className="w-6" />}
+                path='#' />
+            ]}
           />
           {/* <div className="sidebar-item sidebar-item-has-child">
             <div className={`sidebar-link`}>

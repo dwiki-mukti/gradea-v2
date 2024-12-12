@@ -27,7 +27,7 @@ export default function SidebarItemPanel({
                     <div className='w-[2rem]'>
                         {ItemIcon ? ItemIcon : (<span>-</span>)}
                     </div>
-                    <div className="capitalize">{label}</div>
+                    <div className="sidebar-label capitalize">{label}</div>
                 </div>
 
                 {sidebarChilds?.length && (
