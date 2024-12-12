@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Image from "next/image";
 import { ReactNode } from "react";
 import SidebarItemPanel from "../_components/SidebarItemPanel";
 
@@ -20,13 +20,15 @@ export default function SidebarPanel({
     <>
       <aside className="sidebar">
         <div className="text-center pb-8 pt-10">
-          <Image
+          <img
             src={"/public/images/main-logo.png"}
             alt="logo-app"
-            width={160}
-            height={0}
-            style={{ height: "auto", width: "7rem" }}
-            className="mx-auto"
+            className="mx-auto brand-logo"
+          />
+          <img
+            src={"/public/images/main-logo-mini.png"}
+            alt="logo-app"
+            className="mx-auto brand-logo-mini"
           />
         </div>
         <div className="text-sm">

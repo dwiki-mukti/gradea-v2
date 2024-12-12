@@ -30,7 +30,7 @@ export default function SidebarItemPanel({
       >
         <div className="flex items-center">
           <div className="w-[2rem]">{ItemIcon ? ItemIcon : <span>-</span>}</div>
-          <div className="capitalize">{label}</div>
+          <div className="sidebar-label capitalize">{label}</div>
         </div>
 
         {sidebarChilds?.length && (
@@ -49,7 +49,10 @@ export default function SidebarItemPanel({
                 href={sidebarChild.path ?? "#"}
                 className={`sidebar-link ${sidebarChild.isActive ? "text-primary" : ""}`}
               >
-                <div className="capitalize">{sidebarChild.label}</div>
+                <div className="icon">{sidebarChild.label?.[0] ?? "?"}</div>
+                <div className="sidebar-label capitalize">
+                  {sidebarChild.label}
+                </div>
               </Link>
             </Fragment>
           ))}
