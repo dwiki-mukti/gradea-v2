@@ -108,7 +108,6 @@
   .sidebar-item-has-child,
   .sidebar-item {
     @apply rounded-md mx-3;
-    @apply text-secondary;
   }
 
   .sidebar-item-child {
@@ -149,6 +148,10 @@
 
   .sidebar-child > .sidebar-link {
     @apply pl-12;
+  }
+
+  .sidebar-child > .sidebar-link > .icon {
+    @apply hidden;
   }
 
   *:not(.sidebar-item-child) > .sidebar-item-has-child.active > .sidebar-link,
@@ -201,7 +204,11 @@
     @apply hidden;
   }
 
-  .sidebar-item-has-child .sidebar-item {
-    @apply mx-0;
+  .sidebar-child > .sidebar-link {
+    @apply mx-auto px-0 flex items-center justify-center;
+  }
+
+  .sidebar-child > .sidebar-link > .icon {
+    @apply block font-bold;
   }
 }

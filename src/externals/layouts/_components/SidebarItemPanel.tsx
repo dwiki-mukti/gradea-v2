@@ -44,7 +44,8 @@ export default function SidebarItemPanel({
                     {sidebarChilds.map((sidebarChild, indexSidebarChilds) => (
                         <Fragment key={indexSidebarChilds}>
                             <Link href={sidebarChild.path ?? '#'} className={`sidebar-link ${sidebarChild.isActive ? 'text-primary' : ''}`}>
-                                <div className="capitalize">{sidebarChild.label}</div>
+                                <div className="icon">{sidebarChild.label?.[0] ?? '?'}</div>
+                                <div className="sidebar-label capitalize">{sidebarChild.label}</div>
                             </Link>
                         </Fragment>
                     ))}
