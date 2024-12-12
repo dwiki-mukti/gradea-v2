@@ -1,9 +1,7 @@
 'use client'
 
-import SidebarItemPanel, { onClickSidenavHasChild } from '../_components/SidebarItemPanel'
-import { ChevronLeftIcon, CubeIcon } from '@heroicons/react/24/solid'
 import { ReactNode } from 'react';
-import Link from 'next/link';
+import SidebarItemPanel from '../_components/SidebarItemPanel';
 
 interface sidebarItem {
   label: string;
@@ -24,10 +22,12 @@ export default function SidebarPanel({
           <img
             src={'/public/images/main-logo.png'}
             alt='logo-app'
-            // width={160}
-            // height={0}
-            style={{ height: 'auto', width: '7rem' }}
-            className='mx-auto'
+            className='mx-auto brand-logo'
+          />
+          <img
+            src={'/public/images/main-logo-mini.png'}
+            alt='logo-app'
+            className='mx-auto brand-logo-mini'
           />
         </div>
         <div className='text-sm'>

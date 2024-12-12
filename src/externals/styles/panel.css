@@ -9,7 +9,6 @@
 }
 
 #wrapper-panel {
-
   /**
    *
    *
@@ -77,7 +76,8 @@
     @apply lg:relative;
     @apply bg-white;
     /* @apply min-[2880px]:min-h-full; */
-    width: var(--width-sidebar);
+    @apply w-[var(--width-sidebar)];
+    /* width: var(--width-sidebar); */
     /* transition: margin-left 300ms ease, width 300ms ease; */
     @apply duration-fast;
     transition-property: margin-left, width;
@@ -86,6 +86,17 @@
   .sidebar-overlay {
     @apply fixed z-[7] inset-0 bg-black/30;
     @apply lg:hidden;
+  }
+
+  .sidebar .brand-logo {
+    height: auto;
+    width: 7rem;
+  }
+
+  .sidebar .brand-logo-mini {
+    @apply hidden;
+    height: auto;
+    width: 2rem;
   }
 
   /**
@@ -108,7 +119,7 @@
   @apply bg-slate-100;
 } */
 
-  .sidebar-item-has-child-open>.sidebar-item-child {
+  .sidebar-item-has-child-open > .sidebar-item-child {
     @apply block bg-slate-100;
   }
 
@@ -126,27 +137,32 @@
   .sidebar-item-has-child-open {
     @apply bg-gray-100;
   }
-  
-  .sidebar-item-has-child-open>.sidebar-child {
+
+  .sidebar-item-has-child-open > .sidebar-child {
     @apply block;
   }
-  
+
   .sidebar-child {
     @apply hidden pb-2 text-sm;
   }
 
-  .sidebar-child>.sidebar-link {
+  .sidebar-child > .sidebar-link {
     @apply pl-12;
   }
 
-  *:not(.sidebar-item-child)>.sidebar-item-has-child.active>.sidebar-link,
-  *:not(.sidebar-item-child)>.sidebar-item.active>.sidebar-link {
+  .sidebar-child > .sidebar-link > .icon {
+    @apply hidden;
+  }
+
+  *:not(.sidebar-item-child) > .sidebar-item-has-child.active > .sidebar-link,
+  *:not(.sidebar-item-child) > .sidebar-item.active > .sidebar-link {
     @apply bg-[#f3f4f6] text-[#1f2a37];
   }
 
-  .sidebar-item-child .sidebar-item.active>.sidebar-link,
-  .sidebar-item-has-child-open>.sidebar-link,
-  *:not(.sidebar-item.active):not(.sidebar-item-has-child.active)>.sidebar-link:hover {
+  .sidebar-item-child .sidebar-item.active > .sidebar-link,
+  .sidebar-item-has-child-open > .sidebar-link,
+  *:not(.sidebar-item.active):not(.sidebar-item-has-child.active)
+    > .sidebar-link:hover {
     @apply ml-1 duration-200;
     @apply text-secondary;
   }
@@ -163,16 +179,36 @@
     transition: var(--delay-fast);
     transform: rotate(0deg);
   }
-  
+
   .sidebar-item-has-child-open .sidebar-child-arrow {
     transform: rotate(-90deg);
   }
 }
 
-.sidebar-collapse .sidebar {
-  margin-left: calc(var(--width-sidebar) * -1);
-}
+/* Gunakan #wrapper-panel, agar tidak perlu mengubah style menjadi !important  */
+/* Order level css */
+.sidebar-collapse #wrapper-panel {
+  .sidebar {
+    @apply w-0 lg:w-[calc(var(--width-sidebar)_*_0.3)];
+  }
+  .sidebar .brand-logo {
+    @apply hidden;
+  }
+  .sidebar .brand-logo-mini {
+    @apply !block;
+  }
+  .sidebar .sidebar-link .sidebar-label {
+    @apply hidden;
+  }
+  .sidebar-overlay {
+    @apply hidden;
+  }
 
-.sidebar-collapse .sidebar-overlay {
-  @apply hidden;
+  .sidebar-child > .sidebar-link {
+    @apply mx-auto px-0 flex items-center justify-center;
+  }
+
+  .sidebar-child > .sidebar-link > .icon {
+    @apply block font-bold;
+  }
 }
