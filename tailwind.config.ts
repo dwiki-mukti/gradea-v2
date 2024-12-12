@@ -1,1 +1,1 @@
-export { default } from './src/externals/configs/tailwind'
+export { default } from "./src/externals/configs/tailwind";

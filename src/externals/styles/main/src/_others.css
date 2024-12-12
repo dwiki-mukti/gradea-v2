@@ -1,26 +1,22 @@
 :root {
-    /**
+  /**
      *
      *
      *
      * VARIABLE LAYOUT PADDING X
      */
-    --px-desktop: 1rem;
-    --px-mobile: 0px;
+  --px-desktop: 1rem;
+  --px-mobile: 0px;
 }
 
-html{
-    @apply text-[14px] text-gray-500;
+html {
+  @apply text-[14px] text-gray-500;
 }
 
 section,
 .section {
-    @apply px-[var(--px-mobile)] lg:px-[var(--px-desktop)];
+  @apply px-[var(--px-mobile)] lg:px-[var(--px-desktop)];
 }
-
-
-
-
 
 /**
  *
@@ -30,12 +26,12 @@ section,
  */
 .bg-image,
 .bg-profile {
-    background-position: center 0;
-    @apply bg-no-repeat bg-cover;
+  background-position: center 0;
+  @apply bg-no-repeat bg-cover;
 }
 
 .bg-profile {
-    @apply rounded-[50%] aspect-square block bg-gray-600/50 h-[1.75rem] text-center;
+  @apply rounded-[50%] aspect-square block bg-gray-600/50 h-[1.75rem] text-center;
 }
 
 /**
@@ -45,9 +41,9 @@ section,
  * MODAL
  */
 .modal {
-    @apply pb-16 pt-2 fixed inset-0 z-20 flex overflow-auto;
-    @apply bg-white/30 backdrop-blur-sm shadow-lg;
-    /* @apply bg-black/50; */
+  @apply pb-16 pt-2 fixed inset-0 z-20 flex overflow-auto;
+  @apply bg-white/30 backdrop-blur-sm shadow-lg;
+  /* @apply bg-black/50; */
 }
 
 /**
@@ -57,7 +53,7 @@ section,
  * MARK
  */
 .mark {
-    @apply w-[18px] aspect-square rounded-full flex items-center justify-center;
-    @apply text-[10px] text-white font-semibold truncate;
-    @apply bg-primary;
+  @apply w-[18px] aspect-square rounded-full flex items-center justify-center;
+  @apply text-[10px] text-white font-semibold truncate;
+  @apply bg-primary;
 }

@@ -1,43 +1,57 @@
-'use client'
+"use client";
 
-import { DetailedHTMLProps, Dispatch, FormEvent, FormEventHandler, Fragment, HTMLAttributes, ReactNode, SetStateAction, isValidElement, useContext, useEffect, useState } from 'react'
-import Button from './Button'
-import Input, { typeInputProps } from './inputs/Input'
-import { useGlobalContext } from '../contexts/GlobalContext'
-import { api, isInvalidForm, onInvalidRequestAdonis } from '../utils/frontend'
+import {
+  DetailedHTMLProps,
+  Dispatch,
+  FormEvent,
+  FormEventHandler,
+  Fragment,
+  HTMLAttributes,
+  ReactNode,
+  SetStateAction,
+  isValidElement,
+  useEffect,
+  useState,
+} from "react";
+import { useGlobalContext } from "../contexts/GlobalContext";
+import { api, isInvalidForm, onInvalidRequestAdonis } from "../utils/frontend";
+import Button from "./Button";
+import Input, { typeInputProps } from "./inputs/Input";
 
-
-
-export interface typeFormInputProps extends Omit<typeInputProps, 'stateHandler'> {
-  parentProps?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
-};
+export interface typeFormInputProps
+  extends Omit<typeInputProps, "stateHandler"> {
+  parentProps?: DetailedHTMLProps<
+    HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  >;
+}
 interface FormProps {
   fields: (typeFormInputProps | ReactNode)[];
   disabled?: boolean;
   onSubmit?: FormEventHandler<HTMLFormElement>;
-  stateHandler?: [typeStateInput, Dispatch<SetStateAction<typeStateInput>>],
+  stateHandler?: [typeStateInput, Dispatch<SetStateAction<typeStateInput>>];
   submitConfig?: {
-    path: string,
-    method?: string,
-    onSuccess: (responseJson?: Record<string, any>) => any
+    path: string;
+    method?: string;
+    onSuccess: (responseJson?: Record<string, any>) => any;
   };
   sourceDefaultValue?: {
-    path: string,
-    keyResponseJson: string
+    path: string;
+    keyResponseJson: string;
   };
 }
 
-export default function Form({ fields,
+export default function Form({
+  fields,
   onSubmit,
   stateHandler,
   submitConfig,
   sourceDefaultValue,
-  disabled
+  disabled,
 }: FormProps) {
   const { setStatusCode } = useGlobalContext();
-  const [getter, setter] = stateHandler ?? useState<typeStateInput>({})
 
-
+  const [getter, setter] = stateHandler ?? useState<typeStateInput>({});
 
   /**
    * function handler
@@ -46,52 +60,55 @@ export default function Form({ fields,
     event.preventDefault();
 
     // check length invalid message
-    const invalidColumns = Object.keys(getter.invalids ?? {})
-      .filter((fieldName) => (getter.invalids?.[fieldName]?.length));
+    const invalidColumns = Object.keys(getter.invalids ?? {}).filter(
+      (fieldName) => getter.invalids?.[fieldName]?.length,
+    );
 
     // get empty required field
     const emptyFields = fields.filter((field) => {
       if (isValidElement(field)) return false;
       field = field as typeFormInputProps;
-      const isRequired = field.validations?.required
-      const valueColumn = getter.values?.[field.name]
-      return isRequired && !valueColumn
+      const isRequired = field.validations?.required;
+      const valueColumn = getter.values?.[field.name];
+      return isRequired && !valueColumn;
     }) as typeFormInputProps[];
 
     // on submit
     if (!(invalidColumns.length || emptyFields?.length)) {
       if (onSubmit) onSubmit(event);
       if (submitConfig?.path) {
-        setter((prev: any) => ({ ...prev, statusCode: 202 }))
+        setter((prev: any) => ({ ...prev, statusCode: 202 }));
         api({
           path: submitConfig?.path,
-          method: submitConfig?.method ?? 'POST',
-          body: new FormData(event.target as HTMLFormElement)
+          method: submitConfig?.method ?? "POST",
+          body: new FormData(event.target as HTMLFormElement),
         }).then(async (res) => {
           if (res.status == 200) {
-            setter((prev: any) => ({ ...prev, statusCode: res.status }))
-            submitConfig.onSuccess(await res.json())
+            setter((prev: any) => ({ ...prev, statusCode: res.status }));
+            submitConfig.onSuccess(await res.json());
           } else if (res.status == 422) {
-            const { errors } = (await res.json());
-            onInvalidRequestAdonis(errors, setter)
+            const { errors } = await res.json();
+            onInvalidRequestAdonis(errors, setter);
           } else {
-            setter((prev: any) => ({ ...prev, statusCode: res.status }))
+            setter((prev: any) => ({ ...prev, statusCode: res.status }));
           }
-        })
+        });
       }
     } else {
       // push empty field to key invalids on state
-      const newInvalids = emptyFields?.reduce((resultObj, emptyField) => (
-        { ...resultObj, [emptyField.name]: ['Field tidak boleh kosong!'] }
-      ), {})
+      const newInvalids = emptyFields?.reduce(
+        (resultObj, emptyField) => ({
+          ...resultObj,
+          [emptyField.name]: ["Field tidak boleh kosong!"],
+        }),
+        {},
+      );
       setter((prev: typeStateInput) => ({
         ...prev,
-        invalids: { ...(prev.invalids), ...newInvalids }
-      }))
+        invalids: { ...prev.invalids, ...newInvalids },
+      }));
     }
   }
-
-
 
   useEffect(() => {
     if (
@@ -100,59 +117,70 @@ export default function Form({ fields,
       !Object.values(getter?.values ?? {})?.length &&
       getter.statusCode != 202
     ) {
-      setter((prev) => ({ ...(prev ?? {}), statusCode: 202 }))
-      api({ path: sourceDefaultValue.path, staleTime: 60 }).then(async (res) => {
-        if (res.status == 200) {
-          const defaultValueForm = (await res.json())?.data?.[sourceDefaultValue?.keyResponseJson] ?? {}
-          setter((prev: typeStateInput) => ({
-            ...(prev ?? {}),
-            values: {
-              ...(prev?.values ?? {}),
-              ...(defaultValueForm ?? {})
-            },
-            statusCode: res.status
-          }))
-        } else {
-          setStatusCode(res.status)
-          setter((prev) => ({ ...(prev ?? {}), statusCode: res.status }))
-        }
-      })
+      setter((prev) => ({ ...(prev ?? {}), statusCode: 202 }));
+      api({ path: sourceDefaultValue.path, staleTime: 60 }).then(
+        async (res) => {
+          if (res.status == 200) {
+            const defaultValueForm =
+              (await res.json())?.data?.[sourceDefaultValue?.keyResponseJson] ??
+              {};
+            setter((prev: typeStateInput) => ({
+              ...(prev ?? {}),
+              values: {
+                ...(prev?.values ?? {}),
+                ...(defaultValueForm ?? {}),
+              },
+              statusCode: res.status,
+            }));
+          } else {
+            setStatusCode(res.status);
+            setter((prev) => ({ ...(prev ?? {}), statusCode: res.status }));
+          }
+        },
+      );
     }
-  }, [sourceDefaultValue])
-
-
+  }, [sourceDefaultValue]);
 
   /**
    * Rendered JSX
    */
   return (
     <form onSubmit={handleSubmit}>
-      <div className='grid grid-cols-12 gap-x-4 gap-y-2'>
+      <div className="grid grid-cols-12 gap-x-4 gap-y-2">
         {fields.map((field, indexField: number) => {
           if (isValidElement(field)) {
-            return (<Fragment key={indexField}>{field}</Fragment>);
+            return <Fragment key={indexField}>{field}</Fragment>;
           } else {
             const { parentProps, ...fieldProps } = field as typeFormInputProps;
             return (
-              <div key={indexField} {...parentProps} className={parentProps?.className ?? 'col-span-12'} >
-                <Input {...fieldProps} stateHandler={[getter, setter]} readOnly={disabled ?? fieldProps?.readOnly} />
+              <div
+                key={indexField}
+                {...parentProps}
+                className={parentProps?.className ?? "col-span-12"}
+              >
+                <Input
+                  {...fieldProps}
+                  stateHandler={[getter, setter]}
+                  readOnly={disabled ?? fieldProps?.readOnly}
+                />
               </div>
             );
           }
         })}
       </div>
-      <div className='py-8'>
+      <div className="py-8">
         {!disabled && (
-          <div className='border-t flex justify-end pt-4'>
+          <div className="border-t flex justify-end pt-4">
             <Button
-              children='Simpan'
-              className='btn-lg'
+              className="btn-lg"
               isLoading={getter.statusCode == 202}
               disabled={isInvalidForm(getter)}
-            />
+            >
+              Simpan
+            </Button>
           </div>
         )}
       </div>
-    </form >
-  )
+    </form>
+  );
 }

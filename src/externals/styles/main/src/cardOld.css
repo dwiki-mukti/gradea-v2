@@ -5,24 +5,24 @@
  * CARD
  */
 .card {
-    @apply w-full bg-white lg:rounded-lg border shadow;
+  @apply w-full bg-white lg:rounded-lg border shadow;
 }
 
 .card-header {
-    @apply flex justify-between items-center border-b;
+  @apply flex justify-between items-center border-b;
 }
 
 .card-title {
-    @apply font-semibold capitalize mt-2 flex items-center pt-2 pb-3 ;
+  @apply font-semibold capitalize mt-2 flex items-center pt-2 pb-3;
 }
 
 .card-title,
 .px-card-body,
 .card-body,
 .card-footer {
-    @apply px-6;
+  @apply px-6;
 }
 
 .card-footer {
-    @apply flex items-center py-6;
+  @apply flex items-center py-6;
 }

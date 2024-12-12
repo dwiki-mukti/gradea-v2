@@ -1,37 +1,44 @@
-import { DetailedHTMLProps, Dispatch, HTMLAttributes, SetStateAction, useRef } from "react";
+import {
+  DetailedHTMLProps,
+  Dispatch,
+  HTMLAttributes,
+  SetStateAction,
+} from "react";
 
 type MyDropdownProps = DetailedHTMLProps<
-    HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
+  HTMLAttributes<HTMLDivElement>,
+  HTMLDivElement
 > & {
-    justHidden?: boolean,
-    show: boolean,
-    toHide: Dispatch<SetStateAction<any | ((prev: any) => void)>>,
-}
-
+  justHidden?: boolean;
+  show: boolean;
+  toHide: Dispatch<SetStateAction<any | ((prev: any) => void)>>;
+};
 
 export default function Dropdown({
-    justHidden,
-    show,
-    toHide,
-    children,
-    className,
-    ref,
-    ...props
+  justHidden,
+  show,
+  toHide,
+  children,
+  className,
+  // ref,
+  ...props
 }: MyDropdownProps) {
-    return (
-        <>
-            {(show || justHidden) && (
-                <div className={`${!show ? 'hidden' : ''}`}>
-                    <div className="fixed inset-0 z-20" onClick={() => toHide(false)}></div>
-                    <div
-                        className={`absolute z-20 card border shadow ${className}`} //overflow-hidden
-                        {...props}
-                    >
-                        {children}
-                    </div >
-                </div>
-            )}
-        </>
-    )
+  return (
+    <>
+      {(show || justHidden) && (
+        <div className={`${!show ? "hidden" : ""}`}>
+          <div
+            className="fixed inset-0 z-20"
+            onClick={() => toHide(false)}
+          ></div>
+          <div
+            className={`absolute z-20 card border shadow ${className}`} //overflow-hidden
+            {...props}
+          >
+            {children}
+          </div>
+        </div>
+      )}
+    </>
+  );
 }

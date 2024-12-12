@@ -5,10 +5,10 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 
-@import './src/_others.css';
-@import './src/button.css';
-@import './src/input.css';
-@import './src/card.css';
-@import './src/table.css';
+@import "./src/_others.css";
+@import "./src/button.css";
+@import "./src/input.css";
+@import "./src/card.css";
+@import "./src/table.css";
 
 @import "tailwindcss/utilities";

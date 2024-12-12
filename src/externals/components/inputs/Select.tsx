@@ -1,292 +1,334 @@
-'use client'
-import { ReactNode, useEffect, useRef, useState } from 'react'
-import { typeInputProps } from './Input';
-import { api, changeAttributeInput } from '@/externals/utils/frontend';
-import { ChevronDownIcon } from '@heroicons/react/24/solid';
+"use client";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { typeInputProps } from "./Input";
+import { api, changeAttributeInput } from "@/externals/utils/frontend";
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
-interface typeSelect extends Omit<typeInputProps, 'aspectRatio' | 'placeholder'> {
-    placeholder?: ReactNode,
-    value?: string | number | readonly string[],
-    noIcon?: boolean
+interface typeSelect
+  extends Omit<typeInputProps, "aspectRatio" | "placeholder"> {
+  placeholder?: ReactNode;
+  value?: string | number | readonly string[];
+  noIcon?: boolean;
 }
 export default function Select({
-    stateHandler,
+  stateHandler,
 
-    noIcon,
-    noLabel,
-    noUnset,
-    onSearch,
-    isCleanup,
-    validations,
-    noSearch,
-    options,
-    path,
+  noIcon,
+  noLabel,
+  noUnset,
+  onSearch,
+  isCleanup,
+  validations,
+  noSearch,
+  options,
+  path,
 
-    label,
-    disabled,
-    readOnly,
-    placeholder,
-    className,
-    onChange,
-    value,
-    name,
+  label,
+  disabled,
+  readOnly,
+  placeholder,
+  className,
+  onChange,
+  value,
+  name,
 
-    ...props
+  ...props
 }: typeSelect) {
-    const [getter, setter] = stateHandler ?? useState<typeStateInput>({})
-    const refInput = useRef<HTMLInputElement>(null);
-    const [IsFocus, setIsFocus] = useState(false);
-    const [Search, setSearch] = useState('');
-    const [CurrentOptions, setCurrentOptions] = useState<Array<any>>()
+  const [getter, setter] = stateHandler ?? useState<typeStateInput>({});
+  const refInput = useRef<HTMLInputElement>(null);
+  const [IsFocus, setIsFocus] = useState(false);
+  const [Search, setSearch] = useState("");
+  const [CurrentOptions, setCurrentOptions] = useState<Array<any>>();
 
+  /**
+   * Function Handler
+   */
+  const loadOptions = (defaultValue?: any) => {
+    if (path && !options) {
+      // Handle overlap on fetching data
+      const now = Date.now();
+      (window as any).fetchStartTime = {
+        ...((window as any).fetchStartTime ?? {}),
+        [`option@${name}:${path}`]: now,
+      };
 
-    /**
-     * Function Handler
-     */
-    const loadOptions = (defaultValue?: any) => {
-        if (path && !options) {
-            // Handle overlap on fetching data
-            const now = Date.now();
-            (window as any).fetchStartTime = {
-                ...((window as any).fetchStartTime ?? {}),
-                [`option@${name}:${path}`]: now
+      // Fetching data
+      api({
+        path,
+        staleTime: 60,
+        objParams: {
+          search: Search,
+          defaultValue: defaultValue ?? refInput.current?.value,
+        },
+      }).then(async (response) => {
+        if (
+          response.status == 200 &&
+          now >=
+            Number(
+              (window as any)?.fetchStartTime?.[`option@${name}:${path}`] ?? 0,
+            )
+        ) {
+          const { options, labelKey, valueKey } = (await response.json()).data;
+          let onlineOptions = options;
+          if (labelKey && valueKey) {
+            onlineOptions = onlineOptions?.map((option: any) => {
+              const label = option?.[labelKey];
+              const value = option?.[valueKey];
+              return label && value ? { label, value } : (value ?? option);
+            });
+          }
+          setCurrentOptions(onlineOptions);
+          if (defaultValue) {
+            if (
+              !(onlineOptions as any[]).find(
+                (opt: any) => (opt?.value ?? opt) == defaultValue,
+              )
+            ) {
+              changeAttributeInput(refInput.current, "value", "");
             }
-
-            // Fetching data
-            api({
-                path,
-                staleTime: 60,
-                objParams: { search: Search, defaultValue: defaultValue ?? refInput.current?.value }
-            })
-                .then(async (response) => {
-                    if ((response.status == 200) && (now >= Number((window as any)?.fetchStartTime?.[`option@${name}:${path}`] ?? 0))) {
-                        let { options: onlineOptions, labelKey, valueKey } = (await response.json()).data;
-                        if (labelKey && valueKey) {
-                            onlineOptions = onlineOptions?.map((option: any) => {
-                                const label = option?.[labelKey]
-                                const value = option?.[valueKey]
-                                return (label && value) ? { label, value } : (value ?? option)
-                            })
-                        }
-                        setCurrentOptions(onlineOptions);
-                        if (defaultValue) {
-                            if (!(onlineOptions as any[]).find((opt: any) => ((opt?.value ?? opt) == defaultValue))) {
-                                changeAttributeInput(refInput.current, 'value', '')
-                            }
-                        }
-                    }
-                })
+          }
         }
+      });
+    }
+  };
+
+  /**
+   * Use Effect
+   */
+  useEffect(() => {
+    if (Array.isArray(options)) setCurrentOptions(options);
+  }, [options]);
+
+  useEffect(() => loadOptions(), [path]);
+
+  useEffect(() => {
+    const delaySearch = setTimeout(() => loadOptions(), 1000);
+    return () => clearTimeout(delaySearch);
+  }, [Search]);
+
+  useEffect(() => {
+    if (
+      validations?.required &&
+      !getter?.values?.[name] &&
+      !getter?.uncompleteds?.includes(name)
+    ) {
+      setter((prev: typeStateInput) => ({
+        ...prev,
+        uncompleteds: [...(prev?.uncompleteds ?? []), name],
+      }));
+    }
+  }, [validations]);
+
+  useEffect(() => {
+    // select new value
+    let newValue = getter?.values?.[name];
+    if (![undefined, newValue].includes(value)) {
+      newValue = value;
+    } else if (noUnset && !newValue && CurrentOptions?.length) {
+      newValue = CurrentOptions[0]?.value ?? CurrentOptions[0];
     }
 
+    // get selected option
+    const selectedOption = CurrentOptions?.reduce((result, CurrentOption) => {
+      const isSelectedOption =
+        (CurrentOption?.value ?? CurrentOption) == newValue;
+      return isSelectedOption && !result ? CurrentOption : result;
+    }, null);
 
+    if (newValue && !selectedOption) {
+      // reload options
+      loadOptions(newValue);
+    } else {
+      // set value hidden html input
+      if (refInput.current && refInput.current.value != (newValue ?? "")) {
+        refInput.current.value = newValue ?? "";
+      }
 
-    /**
-     * Use Effect
-     */
-    useEffect(() => {
-        if (Array.isArray(options)) setCurrentOptions(options)
-    }, [options])
+      // set state form handler
+      const newLabel = selectedOption?.label ?? selectedOption;
+      const isChangeValue = getter?.values?.[name] != newValue;
+      const isChangeLabel = getter?.labels?.[name] != newLabel;
+      if (isChangeValue || isChangeLabel) {
+        setter((prev) => {
+          const values = { ...(prev?.values ?? {}) };
+          const labels = { ...(prev?.labels ?? {}) };
+          if (newValue == undefined) {
+            delete values[name];
+            delete labels[name];
+          } else {
+            values[name] = newValue;
+            labels[name] = newLabel;
+          }
 
-    useEffect(() => loadOptions(), [path])
+          let uncompleteds = prev?.uncompleteds ?? [];
+          if (values?.[name] && uncompleteds?.includes(name)) {
+            uncompleteds = uncompleteds.filter((res) => res != name);
+          }
 
-    useEffect(() => {
-        let delaySearch = setTimeout(() => loadOptions(), 1000);
-        return (() => clearTimeout(delaySearch));
-    }, [Search])
+          return { ...(prev ?? {}), labels, values, uncompleteds };
+        });
+      }
+    }
+  }, [getter?.values?.[name], CurrentOptions, value, refInput]);
 
-    useEffect(() => {
-        if ((validations?.required && !getter?.values?.[name] && !getter?.uncompleteds?.includes(name))) {
-            setter((prev: typeStateInput) => ({
-                ...prev,
-                uncompleteds: [...(prev?.uncompleteds ?? []), name]
-            }))
-        }
-    }, [validations])
+  useEffect(
+    () => () => {
+      if (isCleanup) {
+        setter((prev) => {
+          const result = { ...prev };
+          delete result?.invalids?.[name];
+          delete result?.labels?.[name];
+          delete result?.values?.[name];
+          result.uncompleteds = (result.uncompleteds ?? []).filter(
+            (res) => res != name,
+          );
+          return result;
+        });
+      }
+    },
 
+    [],
+  );
 
-    useEffect(() => {
-        // select new value
-        let newValue = getter?.values?.[name];
-        if (![undefined, newValue].includes(value)) {
-            newValue = value
-        } else if (noUnset && !newValue && CurrentOptions?.length) {
-            newValue = CurrentOptions[0]?.value ?? CurrentOptions[0]
-        }
-
-        // get selected option
-        const selectedOption = CurrentOptions?.reduce((result, CurrentOption) => {
-            const isSelectedOption = (CurrentOption?.value ?? CurrentOption) == newValue
-            return ((isSelectedOption && !result) ? CurrentOption : result)
-        }, null)
-
-        if (newValue && !selectedOption) {
-            // reload options
-            loadOptions(newValue)
-        } else {
-            // set value hidden html input
-            if (refInput.current && refInput.current.value != (newValue ?? '')) {
-                refInput.current.value = newValue ?? ''
-            }
-
-            // set state form handler
-            const newLabel = selectedOption?.label ?? selectedOption
-            const isChangeValue = getter?.values?.[name] != newValue
-            const isChangeLabel = getter?.labels?.[name] != newLabel
-            if (isChangeValue || isChangeLabel) {
-                setter((prev) => {
-                    const values = { ...(prev?.values ?? {}) }
-                    const labels = { ...(prev?.labels ?? {}) }
-                    if (newValue == undefined) {
-                        delete values[name]
-                        delete labels[name]
-                    } else {
-                        values[name] = newValue
-                        labels[name] = newLabel
-                    }
-
-                    let uncompleteds = prev?.uncompleteds ?? []
-                    if (values?.[name] && uncompleteds?.includes(name)) {
-                        uncompleteds = uncompleteds.filter((res) => (res != name))
-                    }
-
-                    return ({ ...(prev ?? {}), labels, values, uncompleteds })
-                })
-            }
-        }
-    }, [getter?.values?.[name], CurrentOptions, value, refInput])
-
-
-    useEffect(() => () => {
-        if (isCleanup) {
-            setter((prev) => {
-                const result = { ...prev };
-                delete result?.invalids?.[name];
-                delete result?.labels?.[name];
-                delete result?.values?.[name];
-                result.uncompleteds = (result.uncompleteds ?? []).filter((res) => res != name)
-                return result;
-            });
-        }
-    }, []);
-
-
-
-    /**
-     * Rendered JSX
-     */
-    return (
-        <div className='relative'>
-            <div className={`input-group ${className} ${getter?.invalids?.[name]?.length ? 'input-group-invalid' : ''}`}>
-                {(!noLabel) && (
-                    <label onClick={() => { if (!(disabled || readOnly)) setIsFocus(true) }} className='label-input-form'>
-                        {label ?? name}
-                    </label>
-                )}
-                <div className="flex cursor-pointer">
-                    <input
-                        {...props}
-                        ref={refInput}
-                        name={name}
-                        disabled={disabled}
-                        readOnly={readOnly}
-                        type='text'
-                        style={{ display: 'none', ...(props?.style ?? {}) }}
-                        onChange={(e) => {
-                            if (onChange) onChange(e)
-                            const newValue = e.target.value
-                            setter((prev: typeStateInput) => {
-                                const uncompleteds = prev?.uncompleteds?.filter((res) => (res != name)) ?? []
-                                const invalids = { ...(prev.invalids ?? {}) }
-                                const values = { ...(prev.values ?? {}) }
-                                if (newValue) {
-                                    delete invalids[name]
-                                    values[name] = newValue
-                                } else {
-                                    if (validations?.required) invalids[name] = ['Field tidak boleh kosong!']
-                                    delete values[name]
-                                }
-                                return {
-                                    ...prev,
-                                    uncompleteds,
-                                    invalids,
-                                    values,
-                                }
-                            })
-                        }}
-                    />
-                    <div
-                        className={`input-form ${(disabled || readOnly) ? 'cursor-default' : ''} ${disabled ? 'input-form-disabled' : ''} ${IsFocus ? 'input-form-focus' : ''}`}
-                        onClick={() => { if (!(disabled || readOnly)) setIsFocus(true) }}
-                    >
-                        <div className='h-full flex items-center'>
-                            {getter?.labels?.[name] ?? (<span className='text-gray-400'>{placeholder}</span>)}
-                        </div>
-                    </div>
-                    {!(noIcon || disabled || readOnly) && (
-                        <div className='w-0 flex items-center' onClick={() => { if (!(disabled || readOnly)) setIsFocus(true) }}>
-                            <ChevronDownIcon
-                                className='ml-[-2rem] w-[1.5rem]'
-                            />
-                        </div>
-                    )}
-                </div>
-                {Boolean(getter?.invalids?.[name]?.length) && (
-                    <div className='invalid-message'>{getter?.invalids?.[name][0]}</div>
-                )}
+  /**
+   * Rendered JSX
+   */
+  return (
+    <div className="relative">
+      <div
+        className={`input-group ${className} ${getter?.invalids?.[name]?.length ? "input-group-invalid" : ""}`}
+      >
+        {!noLabel && (
+          <label
+            onClick={() => {
+              if (!(disabled || readOnly)) setIsFocus(true);
+            }}
+            className="label-input-form"
+          >
+            {label ?? name}
+          </label>
+        )}
+        <div className="flex cursor-pointer">
+          <input
+            {...props}
+            ref={refInput}
+            name={name}
+            disabled={disabled}
+            readOnly={readOnly}
+            type="text"
+            style={{ display: "none", ...(props?.style ?? {}) }}
+            onChange={(e) => {
+              if (onChange) onChange(e);
+              const newValue = e.target.value;
+              setter((prev: typeStateInput) => {
+                const uncompleteds =
+                  prev?.uncompleteds?.filter((res) => res != name) ?? [];
+                const invalids = { ...(prev.invalids ?? {}) };
+                const values = { ...(prev.values ?? {}) };
+                if (newValue) {
+                  delete invalids[name];
+                  values[name] = newValue;
+                } else {
+                  if (validations?.required)
+                    invalids[name] = ["Field tidak boleh kosong!"];
+                  delete values[name];
+                }
+                return {
+                  ...prev,
+                  uncompleteds,
+                  invalids,
+                  values,
+                };
+              });
+            }}
+          />
+          <div
+            className={`input-form ${disabled || readOnly ? "cursor-default" : ""} ${disabled ? "input-form-disabled" : ""} ${IsFocus ? "input-form-focus" : ""}`}
+            onClick={() => {
+              if (!(disabled || readOnly)) setIsFocus(true);
+            }}
+          >
+            <div className="h-full flex items-center">
+              {getter?.labels?.[name] ?? (
+                <span className="text-gray-400">{placeholder}</span>
+              )}
             </div>
-            {IsFocus && (
-                <div className="absolute inset-x-0 pt-2 z-10">
-                    <div className="card border">
-                        <div className={noSearch ? 'opacity-0 h-0' : 'p-2'}>
-                            <input
-                                autoFocus={true}
-                                className='focus:border-gray-300 input-form'
-                                onChange={(e) => {
-                                    setSearch((e.target.value) ?? '')
-                                    if (onSearch) onSearch(e.target.value ?? '')
-                                }}
-                                onBlur={() => {
-                                    setTimeout(() => {
-                                        setIsFocus(false)
-                                        setSearch('')
-                                    }, 300)
-                                }}
-                                readOnly={noSearch}
-                            />
-                        </div>
-
-                        <div className="relative overflow-y-auto overflow-x-hidden max-h-[10rem]">
-                            <div className='divide-y border-t [&>*]:h-10 [&>*]:flex [&>*]:items-center [&>*]:px-3 [&>*]:cursor-pointer'>
-                                {!(noUnset || validations?.required) && (
-                                    <div
-                                        onClick={() => {
-                                            if (getter?.values?.[name] != undefined) {
-                                                changeAttributeInput(refInput.current, 'value', '')
-                                            }
-                                        }}
-                                        className={`text-gray-500 text-sm hover:bg-sky-200/30`}
-                                    >unset</div>
-                                )}
-                                {CurrentOptions?.map((option, indexOption) => {
-                                    const newValue = option.value ?? option
-                                    return (
-                                        <div
-                                            key={indexOption}
-                                            className={`truncate hover:bg-sky-200/30 ${(newValue == getter?.values?.[name]) ? 'bg-sky-200/30' : ''}`}
-                                            onClick={() => {
-                                                if (getter?.values?.[name] != newValue) {
-                                                    changeAttributeInput(refInput.current, 'value', newValue)
-                                                }
-                                            }}
-                                        >{option.label ?? option}</div>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+          </div>
+          {!(noIcon || disabled || readOnly) && (
+            <div
+              className="w-0 flex items-center"
+              onClick={() => {
+                if (!(disabled || readOnly)) setIsFocus(true);
+              }}
+            >
+              <ChevronDownIcon className="ml-[-2rem] w-[1.5rem]" />
+            </div>
+          )}
         </div>
-    )
+        {Boolean(getter?.invalids?.[name]?.length) && (
+          <div className="invalid-message">{getter?.invalids?.[name][0]}</div>
+        )}
+      </div>
+      {IsFocus && (
+        <div className="absolute inset-x-0 pt-2 z-10">
+          <div className="card border">
+            <div className={noSearch ? "opacity-0 h-0" : "p-2"}>
+              <input
+                autoFocus={true}
+                className="focus:border-gray-300 input-form"
+                onChange={(e) => {
+                  setSearch(e.target.value ?? "");
+                  if (onSearch) onSearch(e.target.value ?? "");
+                }}
+                onBlur={() => {
+                  setTimeout(() => {
+                    setIsFocus(false);
+                    setSearch("");
+                  }, 300);
+                }}
+                readOnly={noSearch}
+              />
+            </div>
+
+            <div className="relative overflow-y-auto overflow-x-hidden max-h-[10rem]">
+              <div className="divide-y border-t [&>*]:h-10 [&>*]:flex [&>*]:items-center [&>*]:px-3 [&>*]:cursor-pointer">
+                {!(noUnset || validations?.required) && (
+                  <div
+                    onClick={() => {
+                      if (getter?.values?.[name] != undefined) {
+                        changeAttributeInput(refInput.current, "value", "");
+                      }
+                    }}
+                    className={`text-gray-500 text-sm hover:bg-sky-200/30`}
+                  >
+                    unset
+                  </div>
+                )}
+                {CurrentOptions?.map((option, indexOption) => {
+                  const newValue = option.value ?? option;
+                  return (
+                    <div
+                      key={indexOption}
+                      className={`truncate hover:bg-sky-200/30 ${newValue == getter?.values?.[name] ? "bg-sky-200/30" : ""}`}
+                      onClick={() => {
+                        if (getter?.values?.[name] != newValue) {
+                          changeAttributeInput(
+                            refInput.current,
+                            "value",
+                            newValue,
+                          );
+                        }
+                      }}
+                    >
+                      {option.label ?? option}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

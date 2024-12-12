@@ -1,33 +1,30 @@
-import { siomaConfig } from '@/externals/configs/app';
-import { objectToQueryUrl } from '../../general';
-import Cookies from 'js-cookie'
+import { siomaConfig } from "@/externals/configs/app";
+import { objectToQueryUrl } from "../../general";
+import Cookies from "js-cookie";
 
-
-
-export const onLogout = ({ redirectTo } = { redirectTo: '/login' }) => {
-  const cookieConfigs: any = {}
-  const domain = process?.env?.NEXT_PUBLIC_PARENT_DOMAIN
-  if (domain) cookieConfigs.domain = domain
+export const onLogout = ({ redirectTo } = { redirectTo: "/login" }) => {
+  const cookieConfigs: any = {};
+  const domain = process?.env?.NEXT_PUBLIC_PARENT_DOMAIN;
+  if (domain) cookieConfigs.domain = domain;
   Cookies.remove(siomaConfig.COOKIE_AUTH_TOKEN ?? "userToken", cookieConfigs);
-  Cookies.remove(siomaConfig.COOKIE_USER_PROFILE ?? "userAuthed", cookieConfigs);
+  Cookies.remove(
+    siomaConfig.COOKIE_USER_PROFILE ?? "userAuthed",
+    cookieConfigs,
+  );
   setTimeout(() => {
-    window.location.href = (redirectTo);
+    window.location.href = redirectTo;
   }, 300);
 };
 
-
-
-
-
 type typeApi = (properties: {
-  path: string,
-  objParams?: Record<string, any>,
-  body?: FormData | Record<string, any> | string,
-  method?: string,
-  headers?: Record<string, string>,
-  host?: string
-  staleTime?: number
-}) => Promise<Response>
+  path: string;
+  objParams?: Record<string, any>;
+  body?: FormData | Record<string, any> | string;
+  method?: string;
+  headers?: Record<string, string>;
+  host?: string;
+  staleTime?: number;
+}) => Promise<Response>;
 
 export const api: typeApi = async ({
   path,
@@ -35,55 +32,53 @@ export const api: typeApi = async ({
   body,
   method,
   headers = {},
-  host = (process.env.NEXT_PUBLIC_BFF_URL ?? ''),
-  staleTime = 0
+  host = process.env.NEXT_PUBLIC_BFF_URL ?? "",
+  staleTime = 0,
 }) => {
   /**
    * Setup var
    */
-  path = path + (path.includes('?') ? '&' : '?') + (objParams ? objectToQueryUrl(objParams) : '');
-
+  path =
+    path +
+    (path.includes("?") ? "&" : "?") +
+    (objParams ? objectToQueryUrl(objParams) : "");
 
   /**
    * Check cache
    */
   if (staleTime > 0) {
-    const cache = (window as any)?.fetchDataCached?.[path]
-    if (cache && (cache.expiredAt >= Date.now())) {
-      return new Promise((resolve) => (resolve(cache.result.clone())))
+    const cache = (window as any)?.fetchDataCached?.[path];
+    if (cache && cache.expiredAt >= Date.now()) {
+      return new Promise((resolve) => resolve(cache.result.clone()));
     }
   }
-
-
 
   /**
    * Get user token
    */
   try {
-    const userToken = Cookies.get(siomaConfig.COOKIE_AUTH_TOKEN ?? "userToken")
-    headers['Authorization'] = `Bearer ${userToken}`
-  } catch (error) { }
-
+    const userToken = Cookies.get(siomaConfig.COOKIE_AUTH_TOKEN ?? "userToken");
+    headers["Authorization"] = `Bearer ${userToken}`;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {}
 
   /**
    * Set content type
    */
   if (body && !(body instanceof FormData)) {
-    headers['Accept'] = 'application/json';
-    headers['Content-Type'] = 'application/json';
-    if (typeof (body) == "object") body = JSON.stringify(body);
+    headers["Accept"] = "application/json";
+    headers["Content-Type"] = "application/json";
+    if (typeof body == "object") body = JSON.stringify(body);
   }
-
 
   /**
    * Fething server
    */
-  const response = fetch((host + path), {
-    method: (method ?? 'get'),
+  const response = fetch(host + path, {
+    method: method ?? "get",
     body,
-    headers
+    headers,
   });
-
 
   /**
    * Pre return
@@ -94,7 +89,6 @@ export const api: typeApi = async ({
      */
     // if (res.status == 401) onLogout()
 
-
     /**
      * Caching data
      */
@@ -103,19 +97,18 @@ export const api: typeApi = async ({
         (window as any).fetchDataCached = {
           ...((window as any)?.fetchDataCached ?? {}),
           [path]: {
-            expiredAt: Date.now() + (staleTime * 1000),
-            result: res.clone()
-          }
-        }
+            expiredAt: Date.now() + staleTime * 1000,
+            result: res.clone(),
+          },
+        };
       } else {
-        delete (window as any)?.fetchDataCached?.[path]
+        delete (window as any)?.fetchDataCached?.[path];
       }
     }
   });
-
 
   /**
    * Return data
    */
   return response;
-}
+};

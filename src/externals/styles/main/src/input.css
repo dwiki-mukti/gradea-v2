@@ -9,8 +9,6 @@ input {
   @apply block;
 }
 
-
-
 /**
  *
  *
@@ -36,8 +34,6 @@ input {
 textarea.input-form {
   @apply h-[4rem] py-2 md:py-1;
 }
-
-
 
 /**
  *
@@ -97,8 +93,6 @@ textarea.input-form {
   @apply border-4 border-primary;
 }
 
-
-
 /**
  *
  *
@@ -133,8 +127,6 @@ input:read-only {
   @apply cursor-default;
 }
 
-
-
 /**
  *
  *
@@ -157,8 +149,6 @@ input:read-only {
   @apply text-xs mt-2;
 }
 
-
-
 /**
  *
  *
@@ -169,10 +159,10 @@ input:read-only {
   @apply h-[3rem] p-[.2rem] flex items-center bg-gray-100 rounded-lg text-black/80;
 }
 
-.radio-switch>* {
+.radio-switch > * {
   @apply w-full h-full px-4 truncate flex justify-center items-center cursor-pointer rounded-md;
 }
 
-.radio-switch>*:has(input[type="radio"]:not(:disabled):checked) {
+.radio-switch > *:has(input[type="radio"]:not(:disabled):checked) {
   @apply bg-white text-black;
 }
