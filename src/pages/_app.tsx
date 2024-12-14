@@ -1,30 +1,57 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import PanelLayout from "@/externals/layouts/PanelLayout";
-import type { AppProps } from "next/app";
 import '@/externals/styles/main/index.css';
-import '@/externals/styles/panel.css';
-import { ReactElement, ReactNode, useState } from "react";
 import { NextPage } from "next";
+import type { AppProps } from "next/app";
+import React, { ReactElement, ReactNode, useState } from "react";
 
+import Error from "next/error";
 import { Inter } from "next/font/google";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import { GlobalContext } from "@/externals/contexts/GlobalContext";
 const font = Inter({ subsets: ["latin"] });
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+export type NextPageWithLayout<P = "", IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 type AppPropsWithLayout = AppProps & { Component: NextPageWithLayout; };
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
+  const router = useRouter()
+  const prefix = String(router.pathname).split('/')[1]
   const getLayout = Component.getLayout ?? ((page) => page);
   const [UserAuthed, setUserAuthed] = useState({});
   const [StatusCode, setStatusCode] = useState(200);
 
-  return getLayout(
-    <main className={font.className}>
-      <GlobalContext.Provider value={{ UserAuthed, setUserAuthed, StatusCode, setStatusCode }}>
+  if (prefix.indexOf('admin') > -1) {
+    import('@/externals/styles/panel.css');
+  }
+
+
+  const RenderedComponent = (): React.ReactNode => {
+    if (![200, 202, 422].includes(StatusCode)) {
+      return (
+        <Error statusCode={StatusCode} />
+      )
+    } else if ((router.route == '/_error') || !['admin'].includes(prefix)) {
+      return (
         <Component {...pageProps} />
-      </GlobalContext.Provider>
-    </main>
+      )
+    } else {
+      return (
+        <PanelLayout>
+          <GlobalContext.Provider value={{ UserAuthed, setUserAuthed, StatusCode, setStatusCode }}>
+            <Component {...pageProps} />
+          </GlobalContext.Provider>
+        </PanelLayout>
+      )
+    }
+  }
+
+  return (
+    <div className={font.className}>
+      <RenderedComponent />
+    </div>
   );
 }
